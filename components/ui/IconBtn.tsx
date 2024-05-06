@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, Text } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 interface IIconBtnProps {
@@ -25,7 +25,6 @@ export default IconBtn;
 const styles = StyleSheet.create({
   button: {
     padding: 4,
-
     justifyContent: "center",
     alignItems: "center",
   },
