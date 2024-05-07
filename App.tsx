@@ -8,6 +8,7 @@ import { RootStackParamList } from "./types/screens";
 import { styleScreens } from "./styles/screens";
 import IconBtn from "./components/ui/IconBtn";
 import { StatusBar } from "expo-status-bar";
+import MapScreen from "./screens/Map";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -45,6 +46,7 @@ export default function App() {
             }}
           />
           <Stack.Screen name="detailsPlace" component={DetailsPlaceScreen} />
+          <Stack.Screen name="mapView" component={MapScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </>
