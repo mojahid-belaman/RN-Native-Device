@@ -4,17 +4,20 @@ import {
   getCurrentPositionAsync,
   useForegroundPermissions,
 } from "expo-location";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 import PrimaryButton from "../ui/Button";
 import { Colors } from "../../styles/colors";
 import { verifyPermission } from "../../helper/verifyPermission";
 import { enumFeature } from "../../types/enums";
 import { getMapPreview } from "../../helper/location";
+import { RootStackParamList } from "../../types/screens";
 
 function LocationPicker() {
   const [pickedLocation, setPickedLocation] = useState({ lat: 0, lon: 0 });
   const [locationPermissionInfo, requestPermission] =
     useForegroundPermissions();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   async function getLocationHandler() {
     const hasPermission = await verifyPermission(
@@ -32,7 +35,11 @@ function LocationPicker() {
     });
   }
 
-  function pickOnMapHandler() {}
+  function pickOnMapHandler() {
+    navigation.navigate("mapView", {
+      ...pickedLocation,
+    });
+  }
 
   let locationPrev = <Text>No location picked yet!</Text>;
 
