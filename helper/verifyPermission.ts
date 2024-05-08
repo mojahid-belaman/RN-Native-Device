@@ -1,6 +1,7 @@
 import { Alert } from "react-native";
 import { PermissionResponse, PermissionStatus } from "expo-location";
-import { enumFeature } from "../types/enums";
+
+import { enumFeature } from "../types";
 
 export async function verifyPermission(
   permissionInfo: PermissionResponse | null,
