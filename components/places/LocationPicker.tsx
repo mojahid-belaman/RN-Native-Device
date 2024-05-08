@@ -1,23 +1,42 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import {
   getCurrentPositionAsync,
+  getLastKnownPositionAsync,
+  LocationAccuracy,
   useForegroundPermissions,
 } from "expo-location";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import {
+  NavigationProp,
+  RouteProp,
+  useIsFocused,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 
 import PrimaryButton from "../ui/Button";
 import { Colors } from "../../styles/colors";
 import { verifyPermission } from "../../helper/verifyPermission";
-import { enumFeature } from "../../types/enums";
 import { getMapPreview } from "../../helper/location";
-import { RootStackParamList } from "../../types/screens";
+import { enumFeature, RootStackParamList, TCoordinate } from "../../types";
 
 function LocationPicker() {
-  const [pickedLocation, setPickedLocation] = useState({ lat: 0, lon: 0 });
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const route = useRoute<RouteProp<RootStackParamList, "newPlace">>();
+  const [pickedLocation, setPickedLocation] = useState<TCoordinate>();
   const [locationPermissionInfo, requestPermission] =
     useForegroundPermissions();
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused && route.params) {
+      const coordinate = {
+        latitude: route.params?.latitude,
+        longitude: route.params?.longitude,
+      };
+      setPickedLocation(coordinate);
+    }
+  }, [route, isFocused]);
 
   async function getLocationHandler() {
     const hasPermission = await verifyPermission(
@@ -28,27 +47,26 @@ function LocationPicker() {
     if (!hasPermission) {
       return;
     }
-    const location = await getCurrentPositionAsync();
-    setPickedLocation({
-      lat: location.coords.latitude,
-      lon: location.coords.longitude,
+    const location = await getCurrentPositionAsync({
+      accuracy: LocationAccuracy.Highest,
     });
+    const latitude = location.coords.latitude!;
+    const longitude = location.coords.longitude!;
+    setPickedLocation({ latitude, longitude });
   }
 
   function pickOnMapHandler() {
-    navigation.navigate("mapView", {
-      ...pickedLocation,
-    });
+    navigation.navigate("mapView");
   }
 
   let locationPrev = <Text>No location picked yet!</Text>;
 
-  if (pickedLocation.lat !== 0 && pickedLocation.lon !== 0) {
+  if (pickedLocation) {
     locationPrev = (
       <Image
         style={styles.image}
         source={{
-          uri: getMapPreview(pickedLocation.lat, pickedLocation.lon),
+          uri: getMapPreview(pickedLocation.latitude, pickedLocation.longitude),
         }}
       />
     );

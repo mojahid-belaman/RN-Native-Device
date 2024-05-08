@@ -5,7 +5,7 @@ import { launchCameraAsync, useCameraPermissions } from "expo-image-picker";
 import { Colors } from "../../styles/colors";
 import PrimaryButton from "../ui/Button";
 import { verifyPermission } from "../../helper/verifyPermission";
-import { enumFeature } from "../../types/enums";
+import { enumFeature } from "../../types";
 
 function ImagePicker() {
   const [pickedImage, setPickedImage] = useState<string>("");
