@@ -4,11 +4,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import NewPlaceScreen from "./screens/NewPlace";
 import DetailsPlaceScreen from "./screens/DetailsPlace";
 import FavoritePlacesScreen from "./screens/FavoritePlaces";
-import { RootStackParamList } from "./types/screens";
 import { styleScreens } from "./styles/screens";
 import IconBtn from "./components/ui/IconBtn";
 import { StatusBar } from "expo-status-bar";
 import MapScreen from "./screens/Map";
+import { RootStackParamList } from "./types";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -46,7 +46,11 @@ export default function App() {
             }}
           />
           <Stack.Screen name="detailsPlace" component={DetailsPlaceScreen} />
-          <Stack.Screen name="mapView" component={MapScreen} />
+          <Stack.Screen
+            name="mapView"
+            component={MapScreen}
+            options={{ title: "Map" }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </>
