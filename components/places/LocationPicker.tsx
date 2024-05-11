@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import {
   getCurrentPositionAsync,
-  getLastKnownPositionAsync,
   LocationAccuracy,
   useForegroundPermissions,
 } from "expo-location";
@@ -17,10 +16,19 @@ import {
 import PrimaryButton from "../ui/Button";
 import { Colors } from "../../styles/colors";
 import { verifyPermission } from "../../helper/verifyPermission";
-import { getMapPreview } from "../../helper/location";
+import {
+  getMapPreview,
+  removeStartKey,
+  reverseGeoloacation,
+} from "../../helper/location";
 import { enumFeature, RootStackParamList, TCoordinate } from "../../types";
 
-function LocationPicker() {
+interface ILocationPickerProps {
+  onPickLocation: (location: TCoordinate, address: string) => void;
+}
+
+function LocationPicker(props: ILocationPickerProps) {
+  const { onPickLocation } = props;
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, "newPlace">>();
   const [pickedLocation, setPickedLocation] = useState<TCoordinate>();
@@ -37,6 +45,20 @@ function LocationPicker() {
       setPickedLocation(coordinate);
     }
   }, [route, isFocused]);
+
+  useEffect(() => {
+    async function readebaleAddress() {
+      try {
+        const address = await reverseGeoloacation(pickedLocation!);
+        const manipulateAddress = removeStartKey(address);
+        onPickLocation(pickedLocation!, manipulateAddress);
+      } catch (error) {}
+    }
+
+    if (pickedLocation) {
+      readebaleAddress();
+    }
+  }, [pickedLocation, onPickLocation]);
 
   async function getLocationHandler() {
     const hasPermission = await verifyPermission(
@@ -75,10 +97,14 @@ function LocationPicker() {
     <View>
       <View style={styles.prevLocation}>{locationPrev}</View>
       <View style={styles.actions}>
-        <PrimaryButton iconName="location" onPress={getLocationHandler}>
+        <PrimaryButton
+          type="fit"
+          iconName="location"
+          onPress={getLocationHandler}
+        >
           Locate User
         </PrimaryButton>
-        <PrimaryButton iconName="map" onPress={pickOnMapHandler}>
+        <PrimaryButton type="fit" iconName="map" onPress={pickOnMapHandler}>
           Pick On Map
         </PrimaryButton>
       </View>
