@@ -1,5 +1,7 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+
 import { Colors } from "../../styles/colors";
+import { Place } from "../../models/place";
 
 interface IPlaceItem {
   place: Place;
@@ -9,10 +11,13 @@ interface IPlaceItem {
 function PlaceItem(props: IPlaceItem) {
   const { place, onSelectPlace } = props;
   return (
-    <Pressable onPress={onSelectPlace}>
-      <Image source={{ uri: place.image }} width={100} height={100} />
-      <View>
-        <Text style={styles.text}>{place.title}</Text>
+    <Pressable
+      style={({ pressed }) => [styles.container, pressed && styles.pressed]}
+      onPress={onSelectPlace}
+    >
+      <Image source={{ uri: place.image }} style={styles.image} />
+      <View style={styles.holdText}>
+        <Text style={[styles.text, styles.title]}>{place.title}</Text>
         <Text style={styles.text}>{place.address}</Text>
       </View>
     </Pressable>
@@ -22,7 +27,31 @@ function PlaceItem(props: IPlaceItem) {
 export default PlaceItem;
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: Colors.primary500,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    borderRadius: 8,
+    overflow: "hidden",
+    marginVertical: 10,
+    elevation: 2,
+  },
+  image: {
+    flex: 1,
+    height: 100,
+  },
+  holdText: {
+    flex: 2,
+    padding: 12,
+  },
   text: {
-    color: Colors.primary200,
+    color: Colors.gray700,
+  },
+  title: {
+    fontWeight: "bold",
+    fontSize: 20,
+  },
+  pressed: {
+    opacity: 0.9,
   },
 });
