@@ -1,20 +1,17 @@
-type Tlocation = {
-  lat: number;
-  lng: number;
-};
+import { TCoordinate } from "../types";
 
-class Place {
+export class Place {
   id: string;
   title: string;
   image: string;
   address: string;
-  location: Tlocation;
+  location: TCoordinate;
 
   constructor(
     title: string,
     image: string,
     address: string,
-    location: Tlocation
+    location: TCoordinate
   ) {
     this.id = new Date().toString() + Math.random();
     this.title = title;
