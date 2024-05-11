@@ -1,7 +1,7 @@
 import PlacesList from "../components/places/PlacesList";
 
 function FavoritePlacesScreen() {
-  return <PlacesList places={[]} />;
+  return <PlacesList />;
 }
 
 export default FavoritePlacesScreen;
