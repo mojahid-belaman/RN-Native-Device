@@ -7,7 +7,12 @@ import PrimaryButton from "../ui/Button";
 import { verifyPermission } from "../../helper/verifyPermission";
 import { enumFeature } from "../../types";
 
-function ImagePicker() {
+interface IImagePickerProps {
+  onTakeImage: (image: string) => void;
+}
+
+function ImagePicker(props: IImagePickerProps) {
+  const { onTakeImage } = props;
   const [pickedImage, setPickedImage] = useState<string>("");
   const [cameraPermissionInfo, requestPermission] = useCameraPermissions();
 
@@ -27,8 +32,10 @@ function ImagePicker() {
       aspect: [16, 9],
       quality: 0.5,
     });
-
-    image.assets && setPickedImage(image.assets[0].uri);
+    if (image.assets) {
+      setPickedImage(image.assets[0].uri);
+      onTakeImage(image.assets[0].uri);
+    }
   }
 
   let imagePrev = <Text>No Image Taken Yet!</Text>;
@@ -40,7 +47,7 @@ function ImagePicker() {
   return (
     <View>
       <View style={styles.prevImage}>{imagePrev}</View>
-      <PrimaryButton iconName="camera" onPress={pickImageHandler}>
+      <PrimaryButton type="fit" iconName="camera" onPress={pickImageHandler}>
         Take Image
       </PrimaryButton>
     </View>
